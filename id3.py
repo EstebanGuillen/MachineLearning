@@ -390,8 +390,8 @@ best_tree_name = ''
 
 #the following group of statements run the id3 algorithm for different values of evaluation criteria and alpha (for pruning)
 evaluation_criteria = "entropy"
-alpha = '0.0'
-print_statement = "Accuracy (using entropy and alpha value of 0.0):  "
+alpha = '1.0'
+print_statement = "Accuracy (using entropy and confidence level of 0%):  "
 id3_entropy = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_accuracy = calculate_accuracy(testing_data,id3_entropy, print_statement)
 if accuracy > best_accuracy:
@@ -401,7 +401,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "entropy"
 alpha = '0.01'
-print_statement = "Accuracy (using entropy and alpha value of 0.01): "
+print_statement = "Accuracy (using entropy and confidence level of 99%): "
 id3_entropy_alpha_01 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_alpha_01_accuracy= calculate_accuracy(testing_data,id3_entropy_alpha_01, print_statement)
 if accuracy > best_accuracy:
@@ -411,7 +411,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "entropy"
 alpha = '0.05'
-print_statement = "Accuracy (using entropy and alpha value of 0.05): "
+print_statement = "Accuracy (using entropy and confidence level of 95%): "
 id3_entropy_alpha_05 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_alpha_05_accuracy = calculate_accuracy(testing_data,id3_entropy_alpha_05, print_statement)
 if accuracy > best_accuracy:
@@ -421,7 +421,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "entropy"
 alpha = '0.5'
-print_statement = "Accuracy (using entropy and alpha value of 0.5):  "
+print_statement = "Accuracy (using entropy and confidence level of 50%):  "
 id3_entropy_alpha_5 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_alpha_5_accuracy = calculate_accuracy(testing_data,id3_entropy_alpha_5, print_statement)
 if accuracy > best_accuracy:
@@ -433,8 +433,8 @@ if accuracy > best_accuracy:
 print("")
 
 evaluation_criteria = "misclassification"
-alpha = '0.0'
-print_statement = "Accuracy (using misclassification and alpha value of 0.0):  "
+alpha = '1.0'
+print_statement = "Accuracy (using misclassification and confidence level of 0%):  "
 id3_misclassification_error = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error, print_statement)
 if accuracy > best_accuracy:
@@ -445,7 +445,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "misclassification"
 alpha = '0.01'
-print_statement = "Accuracy (using misclassification and alpha value of 0.01): "
+print_statement = "Accuracy (using misclassification and confidence level of 99%): "
 id3_misclassification_error_alpha01 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error_alpha01, print_statement)
 if accuracy > best_accuracy:
@@ -455,7 +455,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "misclassification"
 alpha = '0.05'
-print_statement = "Accuracy (using misclassification and alpha value of 0.05): "
+print_statement = "Accuracy (using misclassification and confidence level of 95%): "
 id3_misclassification_error_alpha05 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error_alpha05, print_statement)
 if accuracy > best_accuracy:
@@ -465,7 +465,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "misclassification"
 alpha = '0.5'
-print_statement = "Accuracy (using misclassification and alpha value of 0.5):  "
+print_statement = "Accuracy (using misclassification and confidence level of 50%):  "
 id3_misclassification_error_alpha5 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error_alpha5, print_statement)
 if accuracy > best_accuracy:
@@ -490,5 +490,7 @@ for i,r in validation_data.iterrows():
     file.write(classify(r,best_tree) + "\n")
 
 file.close()
-    
-    
+
+print("classification predictions on validation data written to: validation-best-accuracy.txt")
+
+print("")
