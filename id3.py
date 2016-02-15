@@ -493,6 +493,7 @@ file = open("validation-best-accuracy.txt", "w")
 for i,r in validation_data.iterrows():
     file.write(classify(r,best_tree) + "\n")
 
+#remove the last '\n', need for the online validation script to run correctly
 file.truncate(file.tell() - remove_chars)
 file.close()
 
