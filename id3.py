@@ -49,7 +49,7 @@ negative_value = "p"
 #can be set just before calling the id3 algorithm below
 evaluation_criteria = "entropy"
 
-#look-up table for the chi-square values
+#look-up table for the chi-square values (source https://dl.dropboxusercontent.com/u/63267778/chi_square_table.txt)
 #key = dof, values[0] = alpha 0.5, values[1] =  alpha 0.05, values[2] = alpha 0.01
 chi_square_look_up = {
                     1: [0.4549,3.841,6.635],
@@ -146,10 +146,10 @@ def extract_most_common_value(examples, attribute):
             most_common = value  
     return most_common
 
-#sub-calculation for chi-square, calculates the chi-square for an attribute value
+#sub calculation for chi-square, calculates the chi-square for an attribute value
 def chi_square_calculation_attribute_v(examples_v, target_attribute,attribute_v):
     total_count = size(examples_v)
-    #if the sizie of examples_v is zero then there is nothing to calculate and return 0
+    #if the size of examples_v is zero then there is nothing to calculate and return 0
     if total_count == 0:
         return 0.0
     
@@ -248,10 +248,10 @@ def determine_best_attribute_entropy(examples, target_attribute, attributes):
              
     return best_attribute
 
-#returns the attribute with the best information gain using misclassification error as the impurity measure
+#returns the attribute with the best gain using misclassification error as the impurity measure
 def determine_best_attribute_misclassification_error(examples, target_attribute, attributes):
     best_attribute = ""
-    max_information_gain = 0.0
+    max_gain = 0.0
     #find the misclassification error of S (examples)
     error_s = calculate_misclassification_error(examples,target_attribute)
     size_of_s = size(examples)
@@ -259,16 +259,16 @@ def determine_best_attribute_misclassification_error(examples, target_attribute,
     #loop through attributes and calculate the gain
     for attribute in attributes:
         values = possible_range_of_values(attribute)
-        information_gain = error_s
+        gain = error_s
         for value in values:
             examples_v = filter_data(examples,attribute,value)
             error_v = calculate_misclassification_error(examples_v,target_attribute)
             size_of_examples_v = size(examples_v)
             weight = (size_of_examples_v/size_of_s)
-            information_gain = information_gain - weight*error_v
+            gain = gain - weight*error_v
         #if we have a new candidate for the best attribute store the gain and attribute name
-        if information_gain > max_information_gain:
-            max_information_gain = information_gain
+        if gain > max_gain:
+            max_gain = gain
             best_attribute = attribute
        
     return best_attribute
@@ -277,7 +277,7 @@ def determine_best_attribute_misclassification_error(examples, target_attribute,
 #  examples - set (pandas DataFrame) of training examples provided for current iteration of the algorithm
 #  target_attribute - the name of the column that provides the classification label
 #  attribute_list - set of the names of the attributes for the training examples (excludes target_attribute)
-#  alpha - the alpha value ["0.01","0.05","0.5","0.0"] used for chi-square pruning 
+#  alpha - the alpha value ["0.01","0.05","0.5","1.0"] used for chi-square pruning 
 def id3(examples, target_attribute, attribute_list, alpha):
     root = Node()
     if(all_one_value(examples, target_attribute, positive_value)):
@@ -365,7 +365,7 @@ def calculate_accuracy(testing_data, id3_root, print_statement):
     if count_correct > 0:
         accuracy = (count_correct)/(count_correct + count_false)  * 100
     
-    print(print_statement, accuracy)
+    print(print_statement, accuracy, "%")
     print("  ", "Number correctly classified:   ", count_correct) 
     print("  ", "Number incorrectly classified: ", count_false) 
     return accuracy
@@ -391,7 +391,7 @@ best_tree_name = ''
 #the following group of statements run the id3 algorithm for different values of evaluation criteria and alpha (for pruning)
 evaluation_criteria = "entropy"
 alpha = '1.0'
-print_statement = "Accuracy (using entropy and confidence level of 0%):  "
+print_statement = "Accuracy (using entropy and confidence level of 0):  "
 id3_entropy = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_accuracy = calculate_accuracy(testing_data,id3_entropy, print_statement)
 if accuracy > best_accuracy:
@@ -401,7 +401,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "entropy"
 alpha = '0.01'
-print_statement = "Accuracy (using entropy and confidence level of 99%): "
+print_statement = "Accuracy (using entropy and confidence level of 99): "
 id3_entropy_alpha_01 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_alpha_01_accuracy= calculate_accuracy(testing_data,id3_entropy_alpha_01, print_statement)
 if accuracy > best_accuracy:
@@ -411,7 +411,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "entropy"
 alpha = '0.05'
-print_statement = "Accuracy (using entropy and confidence level of 95%): "
+print_statement = "Accuracy (using entropy and confidence level of 95): "
 id3_entropy_alpha_05 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_alpha_05_accuracy = calculate_accuracy(testing_data,id3_entropy_alpha_05, print_statement)
 if accuracy > best_accuracy:
@@ -421,7 +421,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "entropy"
 alpha = '0.5'
-print_statement = "Accuracy (using entropy and confidence level of 50%):  "
+print_statement = "Accuracy (using entropy and confidence level of 50):  "
 id3_entropy_alpha_5 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = id3_entropy_alpha_5_accuracy = calculate_accuracy(testing_data,id3_entropy_alpha_5, print_statement)
 if accuracy > best_accuracy:
@@ -434,7 +434,7 @@ print("")
 
 evaluation_criteria = "misclassification"
 alpha = '1.0'
-print_statement = "Accuracy (using misclassification and confidence level of 0%):  "
+print_statement = "Accuracy (using misclassification and confidence level of 0):  "
 id3_misclassification_error = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error, print_statement)
 if accuracy > best_accuracy:
@@ -445,7 +445,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "misclassification"
 alpha = '0.01'
-print_statement = "Accuracy (using misclassification and confidence level of 99%): "
+print_statement = "Accuracy (using misclassification and confidence level of 99): "
 id3_misclassification_error_alpha01 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error_alpha01, print_statement)
 if accuracy > best_accuracy:
@@ -455,7 +455,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "misclassification"
 alpha = '0.05'
-print_statement = "Accuracy (using misclassification and confidence level of 95%): "
+print_statement = "Accuracy (using misclassification and confidence level of 95): "
 id3_misclassification_error_alpha05 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error_alpha05, print_statement)
 if accuracy > best_accuracy:
@@ -465,7 +465,7 @@ if accuracy > best_accuracy:
 
 evaluation_criteria = "misclassification"
 alpha = '0.5'
-print_statement = "Accuracy (using misclassification and confidence level of 50%):  "
+print_statement = "Accuracy (using misclassification and confidence level of 50):  "
 id3_misclassification_error_alpha5 = id3(training_data,"label",get_attributes(),alpha)
 accuracy = calculate_accuracy(testing_data,id3_misclassification_error_alpha5, print_statement)
 if accuracy > best_accuracy:
@@ -485,12 +485,18 @@ print("")
 validation_data = pd.read_table("data/validation.txt", sep=",", names=names_of_attributes)
 
 
+import os
+remove_chars = len(os.linesep)
+
+
 file = open("validation-best-accuracy.txt", "w")
 for i,r in validation_data.iterrows():
     file.write(classify(r,best_tree) + "\n")
 
+file.truncate(file.tell() - remove_chars)
 file.close()
 
 print("classification predictions on validation data written to: validation-best-accuracy.txt")
 
 print("")
+
