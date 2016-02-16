@@ -19,3 +19,23 @@ data/testing.txt - the testing data used to test the accuracy of the decision tr
 data/validation.txt - the hidden (labels not known) data used for validating our decision tree 
 
 MachineLearningProjectReport.pdf - project report file, summary of code and results
+
+MachineLearningProjectReport.docx - project report file, summary of code and results
+
+***** RUNNING THE CODE ******
+
+Tested on MacOS
+
+Dependencies:
+Python3
+pandas 0.17.1
+
+To run:
+
+>python3 id3.py
+
+Decision trees will be built from the training data.
+Testing data will be used to evaluate each tree.
+Accuracy values from each tree will be printed to the console.
+Using the “best tree” the validation data will get classified and the results will be written to validation-best.accuracy.txt
+
